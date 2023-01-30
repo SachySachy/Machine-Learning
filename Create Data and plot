@@ -1,0 +1,34 @@
+import numpy as np 
+import matplotlib.pyplot as plt
+np.random.seed(123)
+N = 100
+b = 3.2
+a3 = -0.2
+a2 = 0.2
+a1 = -1
+x = np.random.normal(0, 3, N)
+p = 3
+X = np.ones(N)
+for i in np.arange(p):
+  X = np.vstack((X, np.power(x , i+1)))
+w = np.array([b, a1, a2, a3])
+y = np.matmul(w,X) + np.random.normal(0, 10, N)\N_tr = int(N*0.8)
+N_tst = N-N_tr
+x_tr = x[0:N_tr]
+y_tr = y[0:N_tr]
+x_tst= x[N_tr:]
+y_tst = y[N_tr:]
+plt.plot(x_tr,y_tr, 'ro', label='training data')
+plt.plot(x_tst,y_tst, 'bx', label='test data')
+plt.grid()
+plt.legend()
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('training data ')
+plt.plot(x_tr,y_tr, 'ro', label='training data')
+plt.plot(x_tst,y_tst, 'bx', label='test data')
+plt.grid()
+plt.legend()
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('training data and estimate of the curve descring the data')
