@@ -1,0 +1,99 @@
+from sklearn.datasets import make_blobs
+import numpy as np
+import matplotlib.pyplot as plt
+blob_centers = np.array(
+    [[ 0.2,  2],
+     [-1.5 ,  2],
+     [-3,  1.8],
+     [-3,  3],
+     [-3,  1.3]])
+blob_std = np.array([0.4, 0.3, 0.1, 0.1, 0.1])
+X, y = make_blobs(n_samples=2000, centers=blob_centers,
+                  cluster_std=blob_std, random_state=17)
+                  plt.figure(figsize=(8, 4))
+plt.scatter(X[:, 0], X[:, 1], c=y, s=1)
+plt.xlabel("$x_1$", fontsize=14)
+plt.ylabel("$x_2$", fontsize=14, rotation=0)
+empty = np.zeros(2000)
+centers = np.empty(10, 'object')
+array_loss = [0,0,0,0,0,0,0,0,0,0]
+
+i_1 = 0
+while i_1 < 10:                                         #iterates through loss array 
+  range_mean = 1e20                                     #setting up mean range for clusters
+  current = np.random.randint(0,2000, 5)
+  clu= X[current]                                       #
+  clu1 = X[current]*0*100
+  empty_cluster = empty                                 #clears the cluster with a array 2000 long with 0
+  
+  i_2 = 0                                               # clear 2 loop counter
+  while i_2 < 5:                                        # iterates through points
+    clu1 = clu*0*100                                    #clears cluster point
+    empty_cluster = np.zeros(2000)                      # resets cluster array
+    
+    m = 0                                                 # clear m counter
+    while m <2000:
+      median1 = 1e20                                    # mean is set 
+      i_3 = 0                                           #inner loop 3 is created
+      while i_3 < 5:                                    #loops through cluster points
+        clone = np.linalg.norm(X[m]-clu[i_3])
+        if clone < median1:                              # if median distance is more than cluster
+          median1 = clone                                # clone is the new median
+          current = i_3                                  # curent is the current point is set
+        i_3 = i_3 +1                                     # iterates the to next point
+      element = empty_cluster[current] + 1               # loads temp element array from empty_cluster
+      empty_cluster[current]= element                    # current positionn in empty_cluster gets overriden
+      element = clu1[current] + X[m]                     # temp element location is adding current clu loaction
+      clu1[current] = element                            # and adding it to X current location in 0-2000 once added
+      m = m + 1                                          # it is added to cluster1 and iterated 
+
+    w = 0*100                                            # w iterator is cleared
+    while w <5:                                          # iterates over 5 points
+      element1 = clu1[w]                                 #divison cluster1 point mean with empty_clusters location
+      element2 = empty_cluster[w]
+      element3 = element1/element2
+      clone_point = element3
+      clu1[w] = clone_point                              # this is the new cluster1 mean
+      w = w + 1                                          # w is iterated
+    clu = clu1                                           # Cluster is set from cluster 1 which is temp
+    i_2 = i_2 + 1                                        # second loop is closed and iterates
+  centers[i_1] = clu                                     #centers of loss is set from cluster
+  
+  q = 0*100                                              #clear q counter
+  while q <2000:                                         # iterates from 2000 point
+    
+    s = 0*100                                            #clear s counter
+    while s < 5:
+        clone = np.linalg.norm(X[q]-clu[s])              # creates clone/temp for np.linear alog of X and cluster points
+        median2 = 1e20                                   # new mean is set
+        if clone < median2:                              #if clone is less then mean
+          median2 = clone                                # new mean is of temp
+        s = s +1                                         # iterated S loop
+    median_sqared = median2 * median2                    # median is squared
+    element = array_loss[i_1] + median_sqared            #calculating array loss by adding mean squared
+    array_loss[i_1] = element
+    q = q + 1                                            # end of q loop and iterates
+  element = array_loss[i_1]/2000                         # temp element is divided by array length
+  array_loss[i_1] = element                              # array_loss is set
+  i_1 = i_1 +1                                           # end of main loop
+
+
+
+l = 1
+min =0
+while(l<10):                                              # calcuates the lost function for array loss
+  if (array_loss[l-1] < array_loss[l]):                     # find the min loss of from array lost 
+    min = l-1                                             
+  l = l + 1
+print(array_loss)
+print("minimum lost function location ", min)                       #print lost function location element
+print("minimum total loss",array_loss[min])
+clu= centers[min] 
+
+
+plt.figure(figsize=(8, 4))                                # prints to plt
+plt.scatter(X[:, 0], X[:, 1], c=y, s=1)
+plt.xlabel("$x_1$", fontsize=14)
+plt.ylabel("$x_2$", fontsize=14, rotation=0)
+plt.scatter(clu[:,0], clu[:,1], c='r', s=25 )
+plt.show()
