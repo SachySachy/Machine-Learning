@@ -1,0 +1,23 @@
+p = 2 ##3,4,5
+X_tr = np.ones(N_tr)
+X_tst = np.ones(N_tst)
+for i in np.arange(p):
+  X_tr = np.vstack((X_tr, np.power(x_tr , i+1)))
+  X_tst = np.vstack((X_tst, np.power(x_tst , i+1)))
+  
+w= np.matmul(np.linalg.inv(np.matmul(X_tr, np.transpose(X_tr))) , np.matmul(X_tr,y_tr))
+
+x_min, x_max = np.min(x_tr), np.max(x_tr)
+xx = np.linspace(x_min, x_max, 1000)
+XX = np.ones(len(xx))
+for i in np.arange(p):
+  XX = np.vstack((XX, np.power(xx , i+1)))
+yy = np.matmul(w, XX)
+plt.plot(x_tr,y_tr, 'ro', label='training data')
+plt.plot(x_tst,y_tst, 'bx', label='test data')
+plt.plot(xx,yy, label= 'estimated line')
+plt.grid()
+plt.legend()
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('training data and estimate of the curve descring the data')
