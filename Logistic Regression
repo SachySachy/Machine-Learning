@@ -1,0 +1,54 @@
+N_tr = int(N*0.8)
+N_tst = N-N_tr
+x_tr = X[:, 0:N_tr]
+x_tr = np.vstack((x_tr, np.ones(N_tr)))
+y_tr = np.transpose(y[0:N_tr])
+x_tst= X[:, N_tr:]
+x_tst = np.vstack((x_tst, np.ones(N_tst)))
+y_tst = np.transpose(y[N_tr:])
+epsilon = 1e-3
+d = np.shape(x_tr)[0]
+w = np.zeros([d,1])      
+print(w)  
+temp = np.matmul(np.transpose(w), x_tr )
+alpha = 0.01
+E_train = []
+E_test = []
+i_step = 0
+Convergence_flag = 1
+while Convergence_flag:
+  gradient = 1/N_tr * np.sum((x_tr * (np.matmul(np.transpose(w), x_tr ) - y_tr)), axis=1)
+  gradient = gradient.reshape(d,1)
+  w_new = w  - alpha*gradient
+  if np.linalg.norm(w_new-w) <= epsilon:
+    Convergence_flag = 0
+  w = 1.0 * w_new
+  temp = np.square(np.matmul(np.transpose(w), x_tr ) - y_tr)
+  E_tr = 1/N_tr * np.sum(temp)
+  E_train = np.append(E_train, E_tr ) 
+  E_ts = 1/N_tst * np.sum(np.square((np.matmul(np.transpose(w), x_tst ) - y_tst)))
+  E_test = np.append(E_test, E_ts ) 
+plt.figure()
+plt.plot(E_train, label='loss training')
+plt.plot(E_test, label='loss test' )
+plt.legend()
+plt.grid()
+plt.title('Traing set and testing set loss as a function of iteration')
+plt.xlabel('Iteration')
+plt.ylabel('loss')
+plt.scatter(X[0, :], X[1, :], c=y, s=30, cmap=plt.cm.Paired)
+xx = np.linspace(np.min(X[0, :]),np.max(X[0, :]),100)
+yy = -w[0]/w[1]*xx + (0.5 - w[2])/w[1]
+plt.plot(xx,yy)
+print(w)
+plt.scatter(X[0, :], X[1, :], c=y, s=30, cmap=plt.cm.Paired)
+xx = np.linspace(np.min(X[0, :]),np.max(X[0, :]),100)
+yy = -w[0]/w[1]*xx + (0.5 - w[2])/w[1]
+plt.plot(xx,yy)
+plt.scatter(X[0, :], X[1, :], c=y, s=30, cmap=plt.cm.Paired)
+plt.plot(X[:-1, 0:N_tst], X[1:N_tst, :N_tst], 'bx')
+plt.grid()
+plt.legend()
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('training data ')
